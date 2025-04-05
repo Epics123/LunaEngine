@@ -22,6 +22,7 @@
     <ClInclude Include="Src\Luna\Core\Log.h">
       <Filter>Luna\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Src\lupch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Luna\Core\Application.cpp">
@@ -30,5 +31,6 @@
     <ClCompile Include="Src\Luna\Core\Log.cpp">
       <Filter>Luna\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Src\lupch.cpp" />
   </ItemGroup>
 </Project>

@@ -28,6 +28,9 @@ project "LunaCore"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "lupch.h"
+	pchsource "LunaCore/Src/lupch.cpp"
+
 	files
 	{
 		"%{prj.name}/Src/**.h",
@@ -36,6 +39,7 @@ project "LunaCore"
 
 	includedirs
 	{
+		"%{prj.name}/Src",
 		"%{prj.name}/ThirdParty/spdlog/include"
 	}
 
