@@ -9,20 +9,20 @@ This project has been built using Visual Studio 2022, and currently only runs on
 
 <ins>**1. Downloading the Repository:**</ins>
 
-Clone the repository with 'git clone --recurse-submodules https://github.com/Epics123/LunaEngine.git'
+Clone the repository with `git clone --recurse-submodules https://github.com/Epics123/LunaEngine.git`
 
 <ins>**2. Dependencies:**</ins>
 
-1. This project uses git submodules for some third party libraries, and you should have them if you followed step 1 correctly. If you want to be extra sure, run 'git submodule update --init --recursive'.
-2. Run the 'Setup.bat' script located in the 'Scripts' folder. This will download all the necesary prerequisites for the project.
-3. After all the prerequisites have been installed a '.sln' file for the engine should be generated automatically.
-	- If changes are made to 'premake5.lua' or the solution needs to be regenerated, run the 'Win-GenerateProjects.bat' script located in the main project directory.
+1. This project uses git submodules for some third party libraries, and you should have them if you followed step 1 correctly. If you want to be extra sure, run `git submodule update --init --recursive`.
+2. Run the `Setup.bat` script located in the `Scripts` folder. This will download all the necesary prerequisites for the project.
+3. After all the prerequisites have been installed, a `.sln` file for the engine should be generated automatically.
+	- If changes are made to `premake5.lua` or the solution needs to be regenerated, run the `Win-GenerateProjects.bat` script located in the main project directory.
 
 ## Running the Project
-* Open 'LunaEngine/LunaEngine.sln'
+* Open `LunaEngine/LunaEngine.sln`
 * Select configuration: Debug, Release, or Dist
 * Select platform (currently only supports Windows x64)
-* Set 'Sandbox' as the startup project if it is not already
+* Set `Sandbox` as the startup project if it is not already
 * Build and run
 
 ## Controls
