@@ -1,0 +1,3 @@
+[submodule "LunaCore/ThirdParty/spdlog"]
+	path = LunaCore/ThirdParty/spdlog
+	url = https://github.com/gabime/spdlog
