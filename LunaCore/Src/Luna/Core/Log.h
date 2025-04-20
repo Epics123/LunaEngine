@@ -24,11 +24,11 @@ namespace Luna
 #define LU_CORE_INFO(...)  Luna::Log::GetCoreLogger()->info(__VA_ARGS__);
 #define LU_CORE_WARN(...)  Luna::Log::GetCoreLogger()->warn(__VA_ARGS__);
 #define LU_CORE_ERROR(...) Luna::Log::GetCoreLogger()->error(__VA_ARGS__);
-#define LU_CORE_FATAL(...) Luna::Log::GetCoreLogger()->fatal(__VA_ARGS__);
+#define LU_CORE_FATAL(...) Luna::Log::GetCoreLogger()->critical(__VA_ARGS__); assert(false);
 
 // Client log macros
 #define LU_TRACE(...) Luna::Log::GetClientLogger()->trace(__VA_ARGS__);
 #define LU_INFO(...)  Luna::Log::GetClientLogger()->info(__VA_ARGS__);
 #define LU_WARN(...)  Luna::Log::GetClientLogger()->warn(__VA_ARGS__);
 #define LU_ERROR(...) Luna::Log::GetClientLogger()->error(__VA_ARGS__);
-#define LU_FATAL(...) Luna::Log::GetClientLogger()->fatal(__VA_ARGS__);
+#define LU_FATAL(...) Luna::Log::GetClientLogger()->critical(__VA_ARGS__); assert(false);

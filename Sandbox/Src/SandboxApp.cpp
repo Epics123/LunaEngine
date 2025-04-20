@@ -14,7 +14,7 @@ public:
 	}
 };
 
-Luna::Application* Luna::CreateApplication()
+Luna::UniquePtr<Luna::Application> Luna::CreateApplication()
 {
-	return new Sandbox();
+	return Luna::MakeUnique<Luna::Application>();
 }

@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Core.h"
+#include "Window.h"
+#include "Common.h"
+
+#include <memory>
 
 namespace Luna
 {
@@ -11,7 +15,12 @@ namespace Luna
 		virtual ~Application();
 
 		void Run();
+
+		Window& GetWindow() { return *mWindow; }
+
+	private:
+		UniquePtr<Window> mWindow;
 	};
 
-	Application* CreateApplication(); // To be defined in client
+	std::unique_ptr<Application> CreateApplication(); // To be defined in client
 }

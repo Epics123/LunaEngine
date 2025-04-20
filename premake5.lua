@@ -40,7 +40,8 @@ project "LunaCore"
 	includedirs
 	{
 		"%{prj.name}/Src",
-		"%{prj.name}/ThirdParty/spdlog/include"
+		"%{prj.name}/ThirdParty/spdlog/include",
+		"%{prj.name}/ThirdParty/DirectX12/include/directx"
 	}
 
 	filter "system:windows"
@@ -57,6 +58,13 @@ project "LunaCore"
 		postbuildcommands
 		{
 			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+		}
+
+		links
+		{
+			"d3d12.lib",
+			"dxgi.lib",
+			"d3dcompiler.lib"
 		}
 
 	filter "configurations:Debug"

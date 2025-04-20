@@ -7,10 +7,22 @@
     <Filter Include="Luna\Core">
       <UniqueIdentifier>{0D06687A-7970-1CF1-C2AE-CD962E58FA45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Luna\Platform">
+      <UniqueIdentifier>{89F0F0CD-F5B0-6C04-BEEB-B5812A6BB1E0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Luna\Platform\Windows">
+      <UniqueIdentifier>{C3138744-2F80-423F-F873-DA9C649F64A7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Luna\Renderer">
+      <UniqueIdentifier>{DBF7CDA8-47B8-49DF-10F3-925C7C728EBB}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Luna.h" />
     <ClInclude Include="Src\Luna\Core\Application.h">
+      <Filter>Luna\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Luna\Core\Common.h">
       <Filter>Luna\Core</Filter>
     </ClInclude>
     <ClInclude Include="Src\Luna\Core\Core.h">
@@ -22,6 +34,30 @@
     <ClInclude Include="Src\Luna\Core\Log.h">
       <Filter>Luna\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Luna\Core\Pointers.h">
+      <Filter>Luna\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Luna\Core\Window.h">
+      <Filter>Luna\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Luna\Platform\Windows\D3D12Helpers.h">
+      <Filter>Luna\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Luna\Platform\Windows\D3D12RendererAPI.h">
+      <Filter>Luna\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Luna\Platform\Windows\WinWindow.h">
+      <Filter>Luna\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Luna\Renderer\RenderCommand.h">
+      <Filter>Luna\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Luna\Renderer\Renderer.h">
+      <Filter>Luna\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Luna\Renderer\RendererAPI.h">
+      <Filter>Luna\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="Src\lupch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +66,24 @@
     </ClCompile>
     <ClCompile Include="Src\Luna\Core\Log.cpp">
       <Filter>Luna\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Luna\Core\Window.cpp">
+      <Filter>Luna\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Luna\Platform\Windows\D3D12RendererAPI.cpp">
+      <Filter>Luna\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Luna\Platform\Windows\WinWindow.cpp">
+      <Filter>Luna\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Luna\Renderer\RenderCommand.cpp">
+      <Filter>Luna\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Luna\Renderer\Renderer.cpp">
+      <Filter>Luna\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Luna\Renderer\RendererAPI.cpp">
+      <Filter>Luna\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Src\lupch.cpp" />
   </ItemGroup>
