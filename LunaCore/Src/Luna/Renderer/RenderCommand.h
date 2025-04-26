@@ -12,6 +12,11 @@ namespace Luna
 			sRendererAPI->Init();
 		}
 
+		static void Shutdown()
+		{
+			sRendererAPI->Shutdown();
+		}
+
 		static void Clear()
 		{
 			sRendererAPI->Clear();

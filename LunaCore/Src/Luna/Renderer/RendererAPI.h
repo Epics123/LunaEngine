@@ -19,6 +19,7 @@ namespace Luna
 		virtual ~RendererAPI() = default;
 
 		virtual void Init() = 0;
+		virtual void Shutdown() = 0;
 
 		virtual void Clear() = 0;
 
@@ -30,7 +31,7 @@ namespace Luna
 
 	protected:
 		// Number of back buffers to use, defaults to 3 (triple buffering)
-		uint32_t mBufferCount = 3;
+		static const uint32_t sBufferCount = 3;
 
 		// Viewport dimensions  TODO: Might want to move these elsewhere eventually (or get from window?)
 		uint32_t mWidth;

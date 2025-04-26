@@ -29,6 +29,23 @@ namespace Luna
 		CreateDevice(Factory);
 		CreateCommandQueue();
 		CreateSwapChain(Factory);
+		CreateDescriptorHeaps();
+		CreateRenderTargetViews();
+
+		ThrowIfFailed(mDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&mCommandAllocator)));
+
+		ThrowIfFailed(mDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCommandAllocator.Get(), nullptr, IID_PPV_ARGS(&mCommandList)));
+
+		// Command lists are created in the recording state, but there is nothing to record yet.
+		// The main loop expects it to be closed, so close it now.
+		ThrowIfFailed(mCommandList->Close());
+
+		CreateSyncronizationObjects();
+	}
+
+	void D3D12RendererAPI::Shutdown()
+	{
+		CloseHandle(mFenceEvent);
 	}
 
 	void D3D12RendererAPI::Clear()
@@ -126,7 +143,7 @@ namespace Luna
 	void D3D12RendererAPI::CreateSwapChain(ComPtr<IDXGIFactory7> Factory)
 	{
 		DXGI_SWAP_CHAIN_DESC1 SwapChainDesc = {};
-		SwapChainDesc.BufferCount = mBufferCount;
+		SwapChainDesc.BufferCount = sBufferCount;
 		SwapChainDesc.Width = mWidth;
 		SwapChainDesc.Height = mHeight;
 		SwapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -147,6 +164,43 @@ namespace Luna
 
 		ThrowIfFailed(SwapChain.As(&mSwapChain));
 		mFrameIndex = mSwapChain->GetCurrentBackBufferIndex();
+	}
+
+	void D3D12RendererAPI::CreateDescriptorHeaps()
+	{
+		D3D12_DESCRIPTOR_HEAP_DESC RTVHeapDesc = {};
+		RTVHeapDesc.NumDescriptors = sBufferCount;
+		RTVHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+		RTVHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+		ThrowIfFailed(mDevice->CreateDescriptorHeap(&RTVHeapDesc, IID_PPV_ARGS(&mRTVHeap)));
+
+		mRTVDescriptorSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	}
+
+	void D3D12RendererAPI::CreateRenderTargetViews()
+	{
+		CD3DX12_CPU_DESCRIPTOR_HANDLE RTVHandle(mRTVHeap->GetCPUDescriptorHandleForHeapStart());
+
+		mRenderTargets.resize(sBufferCount);
+
+		for(uint32_t i = 0; i < static_cast<uint32_t>(mRenderTargets.size()); i++)
+		{
+			ThrowIfFailed(mSwapChain->GetBuffer(i, IID_PPV_ARGS(&mRenderTargets[i])));
+			mDevice->CreateRenderTargetView(mRenderTargets[i].Get(), nullptr, RTVHandle);
+			RTVHandle.Offset(1, mRTVDescriptorSize);
+		}
+	}
+
+	void D3D12RendererAPI::CreateSyncronizationObjects()
+	{
+		ThrowIfFailed(mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence)));
+		mFenceValue = 1;
+
+		mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+		if(mFenceEvent == nullptr)
+		{
+			ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()));
+		}
 	}
 
 }

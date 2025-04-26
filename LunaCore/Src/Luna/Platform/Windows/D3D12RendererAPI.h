@@ -12,6 +12,7 @@ namespace Luna
 	{
 	public:
 		virtual void Init() override;
+		virtual void Shutdown() override;
 
 		virtual void Clear() override;
 
@@ -27,9 +28,25 @@ namespace Luna
 
 		void CreateSwapChain(ComPtr<IDXGIFactory7> Factory);
 
+		void CreateDescriptorHeaps();
+
+		void CreateRenderTargetViews();
+
+		void CreateSyncronizationObjects();
+
 	private:
 		ComPtr<ID3D12Device14> mDevice;
 		ComPtr<ID3D12CommandQueue> mCommandQueue;
 		ComPtr<IDXGISwapChain4> mSwapChain;
+		ComPtr<ID3D12CommandAllocator> mCommandAllocator;
+		ComPtr<ID3D12GraphicsCommandList> mCommandList;
+
+		ComPtr<ID3D12DescriptorHeap> mRTVHeap;
+		uint32_t mRTVDescriptorSize;
+		std::vector<ComPtr<ID3D12Resource>> mRenderTargets;
+
+		HANDLE mFenceEvent;
+		ComPtr<ID3D12Fence> mFence;
+		uint64_t mFenceValue;
 	};
 }

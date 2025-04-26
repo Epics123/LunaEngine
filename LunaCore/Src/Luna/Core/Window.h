@@ -21,12 +21,16 @@ namespace Luna
 	class Window
 	{
 	public:
+		using EventCallbackFn = std::function<void()>;
+
 		virtual ~Window() = default;
 
 		virtual void OnUpdate() = 0;
 
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
+
+		virtual void SetEventCallback(const EventCallbackFn& CallbackFn) = 0;
 
 		virtual void* GetNativeWindow() const = 0;
 

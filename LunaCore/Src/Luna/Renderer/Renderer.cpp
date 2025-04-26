@@ -11,7 +11,7 @@ namespace Luna
 
 	void Renderer::Shutdown()
 	{
-
+		RenderCommand::Shutdown();
 	}
 
 }

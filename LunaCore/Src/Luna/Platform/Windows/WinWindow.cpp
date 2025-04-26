@@ -44,19 +44,41 @@ namespace Luna
 									nullptr, // No parent window
 									nullptr, // No menus
 									GetModuleHandle(nullptr),
-									nullptr // data passed to WM_CREATE
+									this // data passed to WM_CREATE
 									);
 
-
+		ShowWindowAsync(sWindowHandle, SW_SHOW);
 	}
 
 	LRESULT CALLBACK WinWindow::WindowProc(HWND hWnd, uint32_t Message, WPARAM wParam, LPARAM lParam)
 	{
+		WinWindow* pWindow = reinterpret_cast<WinWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+
+		switch (Message)
+		{
+		case WM_CREATE:
+			{
+			// Save off WinWindow* that was passed into CreateWindow so we can use it later.
+			LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
+			SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pCreateStruct->lpCreateParams));
+			}
+			return 0;
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			pWindow->EventCallback(); // Super temporary until we have a proper event system
+			return 0;
+		}
+
 		return DefWindowProc(hWnd, Message, wParam, lParam);
 	}
 
 	void WinWindow::OnUpdate()
 	{
-
+		MSG WindowMsg = {};
+		if(PeekMessage(&WindowMsg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&WindowMsg);
+			DispatchMessage(&WindowMsg);
+		}
 	}
 }

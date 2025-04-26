@@ -18,6 +18,8 @@ namespace Luna
 		uint32_t GetHeight() const override { return Height; }
 		const std::string& GetTitle() { return Title; }
 
+		void SetEventCallback(const EventCallbackFn& CallbackFn) override { EventCallback = CallbackFn; }
+
 		void* GetNativeWindow() const override { return nullptr; }
 
 		static HWND GetActiveWindowHandle() { return sWindowHandle; }
@@ -31,6 +33,8 @@ namespace Luna
 		uint32_t Width;
 		uint32_t Height;
 		std::string Title;
+
+		EventCallbackFn EventCallback;
 
 		static HWND sWindowHandle;
 	};
