@@ -9,7 +9,7 @@ namespace Luna
 	{
 		uint32_t DxgiFactoryFlags = 0;
 
-#if defined(_DEBUG)
+#if defined LU_DEBUG
 		{
 			ComPtr<ID3D12Debug6> DebugController;
 			// IID_PPV_ARGS used to guarantee correct interface id (IID) and helps prevent casting errors
@@ -20,6 +20,8 @@ namespace Luna
 
 				// Enable additional debug layer
 				DxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+
+				LU_CORE_INFO("D3D12 Debug Layer enabled.");
 			}
 		}
 #endif
@@ -58,6 +60,48 @@ namespace Luna
 		mWidth = Width;
 		mHeight = Height;
 	}
+
+#ifdef LU_DEBUG
+	void D3D12RendererAPI::PollDebugMessages()
+	{
+		ComPtr<ID3D12InfoQueue> InfoQueue;
+		if(FAILED(mDevice->QueryInterface(IID_PPV_ARGS(&InfoQueue))))
+		{
+			return;
+		}
+
+		const uint64_t NumMsgs = InfoQueue->GetNumStoredMessagesAllowedByRetrievalFilter();
+		for(uint64_t i = 0; i < NumMsgs; i++)
+		{
+			size_t MsgLen = 0;
+			InfoQueue->GetMessage(i, nullptr, &MsgLen); // Get required size
+
+			D3D12_MESSAGE* Msg = (D3D12_MESSAGE*)malloc(MsgLen);
+			if(Msg)
+			{
+				InfoQueue->GetMessage(i, Msg, &MsgLen); // Get the message
+
+				switch (Msg->Severity)
+				{
+				case D3D12_MESSAGE_SEVERITY_CORRUPTION:
+				case D3D12_MESSAGE_SEVERITY_ERROR:
+					LU_CORE_ERROR(Msg->pDescription);
+					break;
+				case D3D12_MESSAGE_SEVERITY_WARNING:
+					LU_CORE_WARN(Msg->pDescription);
+					break;
+				default:
+					LU_CORE_INFO(Msg->pDescription);
+					break;
+				}
+				
+				free(Msg);
+			}
+		}
+
+		InfoQueue->ClearStoredMessages();
+	}
+#endif
 
 	void D3D12RendererAPI::GetHardwareAdapter(IDXGIFactory1* pInFactory, IDXGIAdapter1** ppOutAdapter, bool bRequestHighPerfAdapter)
 	{

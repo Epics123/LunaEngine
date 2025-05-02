@@ -25,6 +25,11 @@ namespace Luna
 
 		virtual void SetViewport(uint32_t X, uint32_t Y, uint32_t Width, uint32_t Height) = 0;
 
+#ifdef LU_DEBUG
+		virtual void PollDebugMessages() = 0;
+#endif // LU_DEBUG
+
+
 		// Get the currently active graphics api
 		static API GetAPI() { return sActiveAPI; }
 		static UniquePtr<RendererAPI> Create();

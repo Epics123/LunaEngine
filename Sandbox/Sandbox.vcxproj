@@ -141,7 +141,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Src\SandboxLayer.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="Src\SandboxApp.cpp" />
+    <ClCompile Include="Src\SandboxLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LunaCore\LunaCore.vcxproj">

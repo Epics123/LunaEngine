@@ -164,6 +164,8 @@
     <ClInclude Include="Src\Luna\Core\Common.h" />
     <ClInclude Include="Src\Luna\Core\Core.h" />
     <ClInclude Include="Src\Luna\Core\EntryPoint.h" />
+    <ClInclude Include="Src\Luna\Core\Layer.h" />
+    <ClInclude Include="Src\Luna\Core\LayerStack.h" />
     <ClInclude Include="Src\Luna\Core\Log.h" />
     <ClInclude Include="Src\Luna\Core\Pointers.h" />
     <ClInclude Include="Src\Luna\Core\Window.h" />
@@ -177,6 +179,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Luna\Core\Application.cpp" />
+    <ClCompile Include="Src\Luna\Core\Layer.cpp" />
+    <ClCompile Include="Src\Luna\Core\LayerStack.cpp" />
     <ClCompile Include="Src\Luna\Core\Log.cpp" />
     <ClCompile Include="Src\Luna\Core\Window.cpp" />
     <ClCompile Include="Src\Luna\Platform\Windows\D3D12RendererAPI.cpp" />

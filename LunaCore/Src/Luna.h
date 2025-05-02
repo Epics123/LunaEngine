@@ -7,3 +7,6 @@
 #include "Luna/Core/Pointers.h"
 
 #include "Luna/Core/EntryPoint.h"
+
+#include "Luna/Renderer/Renderer.h"
+#include "Luna/Renderer/RenderCommand.h"

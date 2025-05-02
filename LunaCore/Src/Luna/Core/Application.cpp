@@ -26,6 +26,11 @@ namespace Luna
 
 		while (mRunning)
 		{
+			for(Layer* CurrentLayer : mLayerStack)
+			{
+				CurrentLayer->OnUpdate();
+			}
+
 			mWindow->OnUpdate();
 		}
 	}
@@ -33,6 +38,18 @@ namespace Luna
 	void Application::Close()
 	{
 		mRunning = false;
+	}
+
+	void Application::PushLayer(Layer* LayerToPush)
+	{
+		mLayerStack.PushLayer(LayerToPush);
+		LayerToPush->OnAttach();
+	}
+
+	void Application::PushOverlay(Layer* Overlay)
+	{
+		mLayerStack.PopOverlay(Overlay);
+		Overlay->OnAttach();
 	}
 
 	void Application::ProcessEvents()

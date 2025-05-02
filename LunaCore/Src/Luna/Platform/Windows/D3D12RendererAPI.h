@@ -18,6 +18,10 @@ namespace Luna
 
 		virtual void SetViewport(uint32_t X, uint32_t Y, uint32_t Width, uint32_t Height) override;
 
+#ifdef LU_DEBUG
+		virtual void PollDebugMessages() override;
+#endif // LU_DEBUG
+
 	private:
 		// Tries to acquire the first available hardware adapter that supports D3D12. If no adapter can be found, ppOutAdapter will be nullptr
 		void GetHardwareAdapter(IDXGIFactory1* pInFactory, IDXGIAdapter1** ppOutAdapter, bool bRequestHighPerfAdapter = false);
