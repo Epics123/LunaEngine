@@ -48,6 +48,7 @@ namespace Luna
 	void D3D12RendererAPI::Shutdown()
 	{
 		CloseHandle(mFenceEvent);
+		PollDebugMessages();
 	}
 
 	void D3D12RendererAPI::Clear()
@@ -70,7 +71,7 @@ namespace Luna
 			return;
 		}
 
-		const uint64_t NumMsgs = InfoQueue->GetNumStoredMessagesAllowedByRetrievalFilter();
+		const uint64_t NumMsgs = InfoQueue->GetNumStoredMessages();
 		for(uint64_t i = 0; i < NumMsgs; i++)
 		{
 			size_t MsgLen = 0;

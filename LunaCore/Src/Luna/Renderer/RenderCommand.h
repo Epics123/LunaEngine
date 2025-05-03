@@ -4,7 +4,7 @@
 
 namespace Luna
 {
-	class RenderCommand
+	class LUNA_API RenderCommand
 	{
 	public:
 		static void Init()
@@ -28,10 +28,7 @@ namespace Luna
 		}
 
 #ifdef LU_DEBUG
-		static void PollDebugMessages()
-		{
-			sRendererAPI->PollDebugMessages();
-		}
+		static void PollDebugMessages();
 #endif
 
 	private:

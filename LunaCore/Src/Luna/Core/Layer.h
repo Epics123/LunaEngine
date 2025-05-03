@@ -5,7 +5,7 @@
 
 namespace Luna
 {
-	class Layer
+	class LUNA_API Layer
 	{
 	public:
 		Layer(const std::string& Name = "UntitledLayer");

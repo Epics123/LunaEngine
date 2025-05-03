@@ -7,7 +7,7 @@ class Sandbox : public Luna::Application
 public:
 	Sandbox()
 	{
-		//PushLayer(new SandboxLayer());
+		PushLayer(new SandboxLayer());
 	}
 
 	~Sandbox()
@@ -18,5 +18,5 @@ public:
 
 Luna::UniquePtr<Luna::Application> Luna::CreateApplication()
 {
-	return Luna::MakeUnique<Luna::Application>();
+	return Luna::MakeUnique<Sandbox>();
 }

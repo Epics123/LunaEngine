@@ -1,4 +1,5 @@
 #include "SandboxLayer.h"
+#include "Luna/Renderer/RenderCommand.h"
 
 SandboxLayer::SandboxLayer()
 	:Luna::Layer("Sandbox")
@@ -18,7 +19,7 @@ void SandboxLayer::OnDetach()
 
 void SandboxLayer::OnUpdate()
 {
-//#ifdef LU_DEBUG
-//	Luna::Renderer::PollDebugMessages();
-//#endif
+#ifdef LU_DEBUG
+	Luna::RenderCommand::PollDebugMessages();
+#endif
 }

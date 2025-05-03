@@ -39,7 +39,7 @@ namespace Luna
 		void CreateSyncronizationObjects();
 
 	private:
-		ComPtr<ID3D12Device14> mDevice;
+		ComPtr<ID3D12Device> mDevice; // TODO: Query and use most recent ID3D12Device
 		ComPtr<ID3D12CommandQueue> mCommandQueue;
 		ComPtr<IDXGISwapChain4> mSwapChain;
 		ComPtr<ID3D12CommandAllocator> mCommandAllocator;
