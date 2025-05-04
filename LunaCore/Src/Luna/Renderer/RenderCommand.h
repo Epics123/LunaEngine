@@ -27,10 +27,6 @@ namespace Luna
 			sRendererAPI->SetViewport(X, Y, Width, Height);
 		}
 
-#ifdef LU_DEBUG
-		static void PollDebugMessages();
-#endif
-
 	private:
 		static UniquePtr<RendererAPI> sRendererAPI;
 	};

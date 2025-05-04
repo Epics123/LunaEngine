@@ -10,11 +10,6 @@ namespace Luna
 		static void Init();
 		static void Shutdown();
 
-#ifdef LU_DEBUG
-		// Poll debug messages for the active renderer api
-		static void PollDebugMessages();
-#endif
-
 		static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	};
 }

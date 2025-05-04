@@ -13,11 +13,4 @@ namespace Luna
 	{
 		RenderCommand::Shutdown();
 	}
-
-#ifdef LU_DEBUG
-	void Renderer::PollDebugMessages()
-	{
-		RenderCommand::PollDebugMessages();
-	}
-#endif
 }

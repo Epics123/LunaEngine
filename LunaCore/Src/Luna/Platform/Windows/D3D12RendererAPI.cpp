@@ -3,6 +3,10 @@
 #include "D3D12RendererAPI.h"
 #include "WinWindow.h"
 
+#ifdef LU_DEBUG
+#include <dxgidebug.h>
+#endif
+
 namespace Luna
 {
 	void D3D12RendererAPI::Init()
@@ -29,6 +33,12 @@ namespace Luna
 		ThrowIfFailed(CreateDXGIFactory2(DxgiFactoryFlags, IID_PPV_ARGS(&Factory)));
 		
 		CreateDevice(Factory);
+
+#ifdef LU_DEBUG
+		SetupDebugCallback();
+#endif // LU_DEBUG
+
+
 		CreateCommandQueue();
 		CreateSwapChain(Factory);
 		CreateDescriptorHeaps();
@@ -48,7 +58,12 @@ namespace Luna
 	void D3D12RendererAPI::Shutdown()
 	{
 		CloseHandle(mFenceEvent);
-		PollDebugMessages();
+
+		ComPtr<IDXGIDebug1> DxgiDebug;
+		if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&DxgiDebug))))
+		{
+			DxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);
+		}
 	}
 
 	void D3D12RendererAPI::Clear()
@@ -102,6 +117,17 @@ namespace Luna
 
 		InfoQueue->ClearStoredMessages();
 	}
+
+	void D3D12RendererAPI::SetupDebugCallback()
+	{
+		ComPtr<ID3D12InfoQueue1> InfoQueue;
+		if(SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&InfoQueue))))
+		{
+			DWORD CallbackCookie = 0;
+			InfoQueue->RegisterMessageCallback(DebugMsgCallback, D3D12_MESSAGE_CALLBACK_FLAG_NONE, nullptr, &CallbackCookie);
+		}
+	}
+
 #endif
 
 	void D3D12RendererAPI::GetHardwareAdapter(IDXGIFactory1* pInFactory, IDXGIAdapter1** ppOutAdapter, bool bRequestHighPerfAdapter)
@@ -248,4 +274,22 @@ namespace Luna
 		}
 	}
 
+#ifdef LU_DEBUG
+	void CALLBACK D3D12RendererAPI::DebugMsgCallback(D3D12_MESSAGE_CATEGORY Category, D3D12_MESSAGE_SEVERITY Severity, D3D12_MESSAGE_ID ID, LPCSTR pDescription, void* pContext)
+	{
+		switch (Severity)
+		{
+		case D3D12_MESSAGE_SEVERITY_CORRUPTION:
+		case D3D12_MESSAGE_SEVERITY_ERROR:
+			LU_CORE_ERROR(pDescription);
+			break;
+		case D3D12_MESSAGE_SEVERITY_WARNING:
+			LU_CORE_WARN(pDescription);
+			break;
+		default:
+			LU_CORE_INFO(pDescription);
+			break;
+		}
+	}
+#endif // LU_DEBUG
 }

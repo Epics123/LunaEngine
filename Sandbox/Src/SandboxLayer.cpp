@@ -19,7 +19,5 @@ void SandboxLayer::OnDetach()
 
 void SandboxLayer::OnUpdate()
 {
-#ifdef LU_DEBUG
-	Luna::RenderCommand::PollDebugMessages();
-#endif
+
 }

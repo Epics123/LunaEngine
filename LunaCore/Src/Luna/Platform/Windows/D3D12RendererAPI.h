@@ -20,6 +20,8 @@ namespace Luna
 
 #ifdef LU_DEBUG
 		virtual void PollDebugMessages() override;
+
+		void SetupDebugCallback();
 #endif // LU_DEBUG
 
 	private:
@@ -37,6 +39,16 @@ namespace Luna
 		void CreateRenderTargetViews();
 
 		void CreateSyncronizationObjects();
+
+#ifdef LU_DEBUG
+		static void CALLBACK DebugMsgCallback(
+			D3D12_MESSAGE_CATEGORY Category,
+			D3D12_MESSAGE_SEVERITY Severity,
+			D3D12_MESSAGE_ID ID,
+			LPCSTR pDescription,
+			void* pContext);
+#endif // LU_DEBUG
+
 
 	private:
 		ComPtr<ID3D12Device> mDevice; // TODO: Query and use most recent ID3D12Device
