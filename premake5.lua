@@ -41,7 +41,8 @@ project "LunaCore"
 	{
 		"%{prj.name}/Src",
 		"%{prj.name}/ThirdParty/spdlog/include",
-		"%{prj.name}/ThirdParty/DirectX12/include/directx"
+		"%{prj.name}/ThirdParty/DirectX12/include/directx",
+		"%{prj.name}/ThirdParty/glm"
 	}
 
 	filter "system:windows"
@@ -106,6 +107,7 @@ project "Sandbox"
 	includedirs
 	{
 		"LunaCore/ThirdParty/spdlog/include",
+		"LunaCore/ThirdParty/glm",
 		"LunaCore/Src"
 	}
 

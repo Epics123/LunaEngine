@@ -4,3 +4,6 @@
 [submodule "LunaCore/ThirdParty/DirectX12"]
 	path = LunaCore/ThirdParty/DirectX12
 	url = https://github.com/microsoft/DirectX-Headers
+[submodule "LunaCore/ThirdParty/glm"]
+	path = LunaCore/ThirdParty/glm
+	url = https://github.com/icaven/glm.git

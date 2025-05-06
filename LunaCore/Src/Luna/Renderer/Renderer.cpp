@@ -13,4 +13,15 @@ namespace Luna
 	{
 		RenderCommand::Shutdown();
 	}
+
+	void Renderer::BeginFrame()
+	{
+		RenderCommand::BeginFrame();
+	}
+
+	void Renderer::EndFrame()
+	{
+		RenderCommand::EndFrame();
+	}
+
 }

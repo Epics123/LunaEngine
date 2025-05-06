@@ -14,6 +14,9 @@ namespace Luna
 		virtual void Init() override;
 		virtual void Shutdown() override;
 
+		virtual void BeginFrame() override;
+		virtual void EndFrame() override;
+
 		virtual void Clear() override;
 
 		virtual void SetViewport(uint32_t X, uint32_t Y, uint32_t Width, uint32_t Height) override;
@@ -40,6 +43,12 @@ namespace Luna
 
 		void CreateSyncronizationObjects();
 
+		void ExecuteCommandLists();
+
+		void WaitForFences();
+
+		void MoveToNextFrame();
+
 #ifdef LU_DEBUG
 		static void CALLBACK DebugMsgCallback(
 			D3D12_MESSAGE_CATEGORY Category,
@@ -54,7 +63,8 @@ namespace Luna
 		ComPtr<ID3D12Device> mDevice; // TODO: Query and use most recent ID3D12Device
 		ComPtr<ID3D12CommandQueue> mCommandQueue;
 		ComPtr<IDXGISwapChain4> mSwapChain;
-		ComPtr<ID3D12CommandAllocator> mCommandAllocator;
+		ComPtr<ID3D12PipelineState> mPipelineState;
+		std::vector<ComPtr<ID3D12CommandAllocator>> mCommandAllocators;
 		ComPtr<ID3D12GraphicsCommandList> mCommandList;
 
 		ComPtr<ID3D12DescriptorHeap> mRTVHeap;
@@ -63,6 +73,6 @@ namespace Luna
 
 		HANDLE mFenceEvent;
 		ComPtr<ID3D12Fence> mFence;
-		uint64_t mFenceValue;
+		std::vector<uint64_t> mFenceValues;
 	};
 }

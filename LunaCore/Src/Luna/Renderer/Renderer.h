@@ -10,6 +10,9 @@ namespace Luna
 		static void Init();
 		static void Shutdown();
 
+		static void BeginFrame();
+		static void EndFrame();
+
 		static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	};
 }

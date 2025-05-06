@@ -27,6 +27,16 @@ namespace Luna
 			sRendererAPI->SetViewport(X, Y, Width, Height);
 		}
 
+		static void BeginFrame()
+		{
+			sRendererAPI->BeginFrame();
+		}
+
+		static void EndFrame()
+		{
+			sRendererAPI->EndFrame();
+		}
+
 	private:
 		static UniquePtr<RendererAPI> sRendererAPI;
 	};

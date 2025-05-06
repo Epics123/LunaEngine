@@ -7,6 +7,8 @@
 #include <dxgidebug.h>
 #endif
 
+#include <glm/gtc/type_ptr.hpp>
+
 namespace Luna
 {
 	void D3D12RendererAPI::Init()
@@ -38,15 +40,12 @@ namespace Luna
 		SetupDebugCallback();
 #endif // LU_DEBUG
 
-
 		CreateCommandQueue();
 		CreateSwapChain(Factory);
 		CreateDescriptorHeaps();
 		CreateRenderTargetViews();
 
-		ThrowIfFailed(mDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&mCommandAllocator)));
-
-		ThrowIfFailed(mDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCommandAllocator.Get(), nullptr, IID_PPV_ARGS(&mCommandList)));
+		ThrowIfFailed(mDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCommandAllocators[mFrameIndex].Get(), nullptr, IID_PPV_ARGS(&mCommandList)));
 
 		// Command lists are created in the recording state, but there is nothing to record yet.
 		// The main loop expects it to be closed, so close it now.
@@ -57,6 +56,8 @@ namespace Luna
 
 	void D3D12RendererAPI::Shutdown()
 	{
+		WaitForFences();
+
 		CloseHandle(mFenceEvent);
 
 		ComPtr<IDXGIDebug1> DxgiDebug;
@@ -66,9 +67,31 @@ namespace Luna
 		}
 	}
 
+	void D3D12RendererAPI::BeginFrame()
+	{
+		ThrowIfFailed(mCommandAllocators[mFrameIndex]->Reset());
+		ThrowIfFailed(mCommandList->Reset(mCommandAllocators[mFrameIndex].Get(), mPipelineState.Get()));
+
+		// Indicate that the back buffer will be used as a render target
+		mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mRenderTargets[mFrameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+	}
+
+	void D3D12RendererAPI::EndFrame()
+	{
+		// Indicate that the back buffer will now be used to present
+		mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mRenderTargets[mFrameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+		ThrowIfFailed(mCommandList->Close());
+
+		ExecuteCommandLists();
+		MoveToNextFrame();
+	}
+
 	void D3D12RendererAPI::Clear()
 	{
+		CD3DX12_CPU_DESCRIPTOR_HANDLE RtvHandle(mRTVHeap->GetCPUDescriptorHandleForHeapStart(), mFrameIndex, mRTVDescriptorSize);
+		mCommandList->OMSetRenderTargets(1, &RtvHandle, FALSE, nullptr);
 
+		mCommandList->ClearRenderTargetView(RtvHandle, glm::value_ptr(mClearColor), 0, nullptr);
 	}
 
 	void D3D12RendererAPI::SetViewport(uint32_t X, uint32_t Y, uint32_t Width, uint32_t Height)
@@ -253,25 +276,67 @@ namespace Luna
 		CD3DX12_CPU_DESCRIPTOR_HANDLE RTVHandle(mRTVHeap->GetCPUDescriptorHandleForHeapStart());
 
 		mRenderTargets.resize(sBufferCount);
+		mCommandAllocators.resize(sBufferCount);
 
 		for(uint32_t i = 0; i < static_cast<uint32_t>(mRenderTargets.size()); i++)
 		{
 			ThrowIfFailed(mSwapChain->GetBuffer(i, IID_PPV_ARGS(&mRenderTargets[i])));
 			mDevice->CreateRenderTargetView(mRenderTargets[i].Get(), nullptr, RTVHandle);
 			RTVHandle.Offset(1, mRTVDescriptorSize);
+
+			ThrowIfFailed(mDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&mCommandAllocators[i])));
 		}
 	}
 
 	void D3D12RendererAPI::CreateSyncronizationObjects()
 	{
-		ThrowIfFailed(mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence)));
-		mFenceValue = 1;
+		mFenceValues.resize(sBufferCount);
+		ThrowIfFailed(mDevice->CreateFence(mFenceValues[mFrameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence)));
+		mFenceValues[mFrameIndex]++;
 
 		mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 		if(mFenceEvent == nullptr)
 		{
 			ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()));
 		}
+
+		WaitForFences();
+	}
+
+	void D3D12RendererAPI::ExecuteCommandLists()
+	{
+		std::vector<ID3D12CommandList*> CmdLists = { mCommandList.Get() };
+		mCommandQueue->ExecuteCommandLists(static_cast<uint32_t>(CmdLists.size()), CmdLists.data());
+
+		ThrowIfFailed(mSwapChain->Present(1, 0));
+	}
+
+	void D3D12RendererAPI::WaitForFences()
+	{
+		ThrowIfFailed(mCommandQueue->Signal(mFence.Get(), mFenceValues[mFrameIndex]));
+
+		// Wait until fence is processed
+		ThrowIfFailed(mFence->SetEventOnCompletion(mFenceValues[mFrameIndex], mFenceEvent));
+		WaitForSingleObjectEx(mFenceEvent, INFINITE, FALSE);
+
+		mFenceValues[mFrameIndex]++;
+	}
+
+	void D3D12RendererAPI::MoveToNextFrame()
+	{
+		const uint64_t CurrentFenceValue = mFenceValues[mFrameIndex];
+		ThrowIfFailed(mCommandQueue->Signal(mFence.Get(), CurrentFenceValue));
+
+		mFrameIndex = mSwapChain->GetCurrentBackBufferIndex();
+
+		if(mFence->GetCompletedValue() < mFenceValues[mFrameIndex])
+		{
+			ThrowIfFailed(mFence->SetEventOnCompletion(mFenceValues[mFrameIndex], mFenceEvent));
+			WaitForSingleObjectEx(mFenceEvent, INFINITE, FALSE);
+		}
+
+		// Set the fence value for the next frame.
+		mFenceValues[mFrameIndex] = CurrentFenceValue + 1;
 	}
 
 #ifdef LU_DEBUG

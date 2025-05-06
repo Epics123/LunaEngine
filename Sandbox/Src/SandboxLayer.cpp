@@ -19,5 +19,7 @@ void SandboxLayer::OnDetach()
 
 void SandboxLayer::OnUpdate()
 {
-
+	Luna::RenderCommand::BeginFrame();
+	Luna::RenderCommand::Clear();
+	Luna::RenderCommand::EndFrame();
 }
